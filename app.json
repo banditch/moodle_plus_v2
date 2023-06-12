@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "template",
-    "slug": "template",
+    "name": "moodle+",
+    "slug": "moodle+",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/m+ LOGO _co",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
