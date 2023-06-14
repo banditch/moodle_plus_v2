@@ -124,8 +124,16 @@ const LoginScreen = () => {
   //
   const reLoginUser = () => {
     console.log(userData)
-    if(userData !== 0) {
+    if(userData !== 0 && userData !== 1) {
+      firestore.collection("users").doc(userData.uid).get()
+      .then((doc) => {
+        const dd = doc.data()
+        dispatch(setUserData({uid: dd.uid, password: dd.password, email: dd.email, username: dd.username, pp_url: dd.pp_url, type: dd.type}))
+      })
       navigation.navigate("HomeScreenS")
+    }
+    if(userData === 1) {
+      navigation.navigate("AdminScreen")
     }
   }
   

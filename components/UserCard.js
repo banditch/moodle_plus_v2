@@ -16,14 +16,14 @@ const UserCard = ({username, email, pp_url, uid, classes, type}) => {
       setOpacity(0)
     })
   }
-
+  
   const [opacity, setOpacity] = useState(1)
   const [height, setHeight] = useState("full")
 
   return (
     <View className="mx-10 my-2 p-3 bg-white rounded-lg flex-row items-center justify-between" style={{opacity, height}}>
       <View className="flex-row items-center space-x-2">
-        <Image source={{uri: pp_url}} className="w-6 h-6"/>
+        <Image source={{uri: pp_url}} className="w-6 h-6 rounded-full"/>
         <View>
           {type === "S" && (
             <View className="bg-sky-300 rounded-full h-2 w-2 mt-1"></View>

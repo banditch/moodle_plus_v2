@@ -1,7 +1,13 @@
 import { View, Text, ImageBackground, Image, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getLastPage, getUserData, resetUser, setLastPage } from '../features/UserDataSlice'
+import { getLastPage, getUserData, resetUser, setLastPage, setUserData } from '../features/UserDataSlice'
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/firestore'
+import 'firebase/compat/storage'
+import * as DocumentPicker from 'expo-document-picker';
+import { useCallback } from 'react'
+
 
 const StudentHomeScreen = () => {
   
@@ -14,6 +20,20 @@ const StudentHomeScreen = () => {
 
   const [logInOut, setLogingInOut] = useState(false)
   
+  const storage = firebase.storage().ref()
+  const firestore = firebase.firestore()
+  
+  const reLoginUser = () => {
+    console.log(userData)
+    if(userData !== 0) {
+      firestore.collection("users").doc(userData.uid).get()
+      .then((doc) => {
+        const dd = doc.data()
+        dispatch(setUserData({uid: dd.uid, password: dd.password, email: dd.email, username: dd.username, pp_url: dd.pp_url, type: dd.type}))
+      })
+      navigation.navigate("HomeScreenS")
+    }
+  }
 
   useEffect(() => {
     console.log(userData, " <------>", lastPageSelected)
@@ -22,6 +42,22 @@ const StudentHomeScreen = () => {
 
   // PAGE SELECTION SYSTEM  
   const [pageSelected, selectPage] = useState("H") //HOME = H, CLASSES = C, MESSAGES = M, USER DATA = U, APP SETTINGS = S
+
+  //UPLOAD NEW PROFILE
+  const updateProfilePicture = useCallback(async () => {
+    const res = DocumentPicker.getDocumentAsync({multiple: false, type: "image/*"})
+    .then((result) => {
+      storage.child(userData.uid + "/" + "pp_url" + "." + result.mimeType.slice(6)).putString(result.uri, "data_url")
+      .then((upload) => {
+        storage.child(userData.uid + "/" + "pp_url" + "." + result.mimeType.slice(6)).getDownloadURL()
+        .then((url) => {
+          firestore.collection("users").doc(userData.uid).update({pp_url: url})
+        })
+        .then(() => {reLoginUser()})
+      })      
+    })
+
+  }, []);
 
   return (
     <View className="flex-1">
@@ -85,10 +121,10 @@ const StudentHomeScreen = () => {
                   </View>
                   <View className="mx-10 space-y-3 items-center justify-start">
                     <View className="p-4 items-center">
-                      <View className="rounded-full bg-white/75 m-3 p-4">
-                        <Image className="w-20 h-20" source={{uri: userData.pp_url}}/>
+                      <View className="rounded-full bg-white/75 m-3 p-2">
+                        <Image className="w-20 h-20 rounded-full" source={{uri: userData.pp_url}}/>
                       </View>
-                      <TouchableOpacity>
+                      <TouchableOpacity onPress={() => updateProfilePicture()}>
                         <Image source={{uri: "https://i.ibb.co/Byzm55N/pencil.png"}} className="h-5 w-5"/>
                       </TouchableOpacity>
                     </View>
@@ -113,7 +149,9 @@ const StudentHomeScreen = () => {
                         )}
                         {!showPassword && (
                           <View className="items-center flex-row">
-                            <Text selectable={false} className="text-3xl font-extrabold text-zinc-700 bg-zinc-700 rounded-lg"> {userData.password}</Text>
+                            <View className="bg-zinc-700 rounded-lg py-0.5">
+                              <Text selectable={false} className="text-3xl font-extrabold text-zinc-700"> {userData.password}</Text>
+                            </View>
                             <TouchableOpacity className="" onPress={() => setPasswordVisavility(true)}>
                               <Image source={{uri: "https://i.ibb.co/JFMpwSG/close-eye.png"}} className="h-10 w-10 ml-6"/>
                             </TouchableOpacity>

@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addUser, resetUsers } from '../features/AdminSlice'
 import { useNavigation } from '@react-navigation/native'
 import { Image } from 'react-native'
+import { setUserData } from '../features/UserDataSlice'
 
 
 firebase.initializeApp({
@@ -46,6 +47,7 @@ const AdminUserManagment = () => {
     const [emptyMsg, setEmptyMsg] = useState("")
 
     useEffect(() => {
+        dispatch(setUserData(1))
         getUserList()
         if(userList.length = 0 ) {
             setEmptyMsg("The School looks empty, add a user down below")
@@ -124,6 +126,7 @@ const AdminUserManagment = () => {
     }
     
     const goToLogin = () => {
+        dispatch(setUserData(0))
         window.location.reload()
     }
 
