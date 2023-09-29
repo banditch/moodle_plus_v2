@@ -35,9 +35,6 @@ const AdminUserManagment = () => {
     const [userEmail, setUserEmail] = useState("")
     const [error, setError] = useState("")
     const [message, setMessage] = useState("")
-    const error_000 ="Email is Empty"
-    const error_001 = "Email can't contain spaces"
-    const error_002 = "Email can't contain special characters"
 
     const [account_type, setType] = useState("S")
 
@@ -55,13 +52,15 @@ const AdminUserManagment = () => {
             
     }, [""])
     
-    useEffect(() => {
-        const interval = setInterval(() => {
-            getUserList()
-        }, 500);
-
-        return () => clearInterval(interval);
-    }, []);
+    const deleteUser = (email, username) => {
+        firebase.auth().signInWithEmailAndPassword(email, username+"2023")
+        .then((user_data) => {
+          console.log(user_data.user)
+          firebase.firestore().collection("users").doc(user_data.user.uid).delete()
+          user_data.user.delete()
+          getUserList()
+        })
+      }
       
 
     const getUserList = () => {
@@ -167,7 +166,7 @@ const AdminUserManagment = () => {
             </View>
         )}
         {userList.length > 0 && (
-            <ScrollView className="space-y-4 h-[550px]" showsHorizontalScrollIndicator={false} style={{flexGrow: 0}}>
+            <ScrollView className="space-y-4 h-[550px] pr-5" showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} style={{flexGrow: 0}}>
                 {userList.map((user) => (
                     <UserCard
                         key={user.uid}
@@ -177,7 +176,8 @@ const AdminUserManagment = () => {
                         pp_url={user.pp_url}
                         classes={user.classes}
                         type={user.type}
-                    />
+                        removeUsers={() => deleteUser(user.email, user.username) }
+                    /> 
                 ))}
             </ScrollView>
         )}

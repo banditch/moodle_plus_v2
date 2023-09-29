@@ -8,7 +8,7 @@ import adminDataReducer from './features/AdminSlice'
 
 const reducers = combineReducers({
     userData: userDataReducer,
-    adminData: adminDataReducer
+    adminData: adminDataReducer,
 })
 
 const persistConfig = {

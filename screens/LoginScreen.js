@@ -7,13 +7,14 @@ import 'firebase/compat/auth'
 import 'firebase/compat/firestore'
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserData, resetUser, setUserData } from '../features/UserDataSlice';
+import { Motion } from '@legendapp/motion';
 
 
 const LoginScreen = () => {
 
   //LOADING FONTS
   const [fontsLoaded] = useFonts({
-    'Roboto_BK': require('../assets/fonts/Roboto-Black.ttf'),
+    'outfit': require('../assets/Fonts/Outfit-VariableFont_wght.ttf'),
   });
   //LOADING FONTS
 
@@ -66,7 +67,7 @@ const LoginScreen = () => {
 
   
   //ADMIN CODE
-  const adminCode = "/gamemode 1"
+  const adminCode = "admin mode"
   //ADMIN CODE
 
   
@@ -145,10 +146,10 @@ const LoginScreen = () => {
           <View className="w-9/12 h-5/6 rounded-2xl  bg-white/30 shadow-2xl">
             <View className="flex-row items-center justify-around mx-5 my-7">
               <View className="items-center justify-center flex-1 -mr-10">
-                <Text className="text-6xl" style={{fontFamily: "Roboto_BK", fontWeight: "bold"}}>Welcome Back,</Text>
-                <Text className="text-xl mt-1">Enter your credentials below</Text>
+                <Text style={{fontFamily: 'outfit'}} className="text-6xl" >Welcome Back,</Text>
+                <Text style={{fontFamily: 'outfit'}} className="text-xl mt-1">Enter your credentials below</Text>
                 <View className="px-3 py-1 mt-2 bg-slate-400/50 rounded-lg" style={{opacity: error === "no-error" ? 0 : 1}}>
-                  <Text className="text-lg  text-rose-500 font-bold">{error}</Text>
+                  <Text style={{fontFamily: 'outfit'}} className="text-lg  text-rose-500 font-bold">{error}</Text>
                 </View>
               </View>
               <View className="mb-7">
@@ -187,46 +188,57 @@ const LoginScreen = () => {
                 <View className="items-center justify-center">
                   {userEmail === adminCode && (
                       <View>
-                        <TouchableWithoutFeedback className="" onPressOut={() => navigation.navigate("AdminScreen")}>
-                          <View className="mt-10 space-x-3 border-black border-2 rounded-lg p-3 bg-white flex-row items-center justify-center">
+                        <Motion.Pressable className="" onPressOut={() => navigation.navigate("AdminScreen")}>
+                          <Motion.View className="mt-10 space-x-3 border-black border-2 rounded-lg p-3 bg-white flex-row items-center justify-center">
                             <Image 
                               source={{uri: "https://i.ibb.co/bshftbN/spades.png"}}
                               className="w-7 h-7"
                             />
-                            <Text className="font-bold" style={{fontFamily: "Roboto_BK"}}>ENTER ADMIN MODE</Text>
+                            <Text style={{fontFamily: 'outfit'}} className="font-bold">ENTER ADMIN MODE</Text>
                             <Image 
                               source={{uri: "https://i.ibb.co/bshftbN/spades.png"}}
                               className="w-7 h-7"
                             />
-                          </View>
-                        </TouchableWithoutFeedback>
+                          </Motion.View>
+                        </Motion.Pressable>
                       </View>
                   )}
                   {userEmail !== adminCode && (
                     <View>
                       <View className="mt-10">
-                        <TouchableOpacity className="" onPress={() => logInUser()}>
-                            <Image 
-                              source={{uri: "https://i.ibb.co/0yh7q1g/enter-bk.png"}}
-                              className="w-12 h-12"
-                            />
-                        </TouchableOpacity>
-                    </View>
-                    <View className="mt-10">
-                        <TouchableOpacity className="" onPress={() => dispatch(resetUser())}>
-                              <Text>RESET</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View className="mt-10">
-                        <TouchableOpacity className="" onPress={() => dispatch(setUserData({uid: "xd"}))}>
-                              <Text>TEST</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View className="mt-10">
-                        <TouchableOpacity className="" onPress={() => console.log(userData)}>
-                              <Text>LOG</Text>
-                        </TouchableOpacity>
-                    </View>
+                        <Motion.Pressable className="" onPress={() => logInUser()}>
+                            <Motion.View
+                              initial={{x: 0, scale: 1}}
+                              whileHover={{x: -25}}
+                              whileTap={{x: -25, scale: 1.1}}
+                              transition={{type: "tween", ease: "circInOut", duration: 250, }}
+                            >
+                              <Image 
+                                source={{uri: "https://i.ibb.co/0yh7q1g/enter-bk.png"}}
+                                className="w-12 h-12"
+                              />
+                            </Motion.View>
+                        </Motion.Pressable>
+                      </View>
+                      {         
+                        /**
+                        <View className="mt-10">
+                          <TouchableOpacity className="" onPress={() => dispatch(resetUser())}>
+                                <Text>RESET</Text>
+                          </TouchableOpacity>
+                          </View>
+                          <View className="mt-10">
+                              <TouchableOpacity className="" onPress={() => dispatch(setUserData({uid: "xd"}))}>
+                                    <Text>TEST</Text>
+                              </TouchableOpacity>
+                          </View>
+                          <View className="mt-10">
+                              <TouchableOpacity className="" onPress={() => console.log(userData)}>
+                                    <Text>LOG</Text>
+                              </TouchableOpacity>
+                          </View>
+                        */
+                      } 
                     </View>
                   )}
                 </View>
